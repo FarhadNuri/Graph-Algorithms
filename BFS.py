@@ -14,6 +14,8 @@ def bfs(graph, st):
                 print(neighbor, end=" ")
                 queue.append(neighbor)
 
+    return
+
 
 graph = {
     'a': ['b', 'd'],
