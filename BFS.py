@@ -1,18 +1,21 @@
 from collections import deque
 
-def bfs(graph, st):
+def bfs(graph, st, en):
+    q = deque([st])
     v = {st}
-    queue = deque([st])
-    print(st, end=" ")
-  
-    while queue:
-        cur = queue.popleft()
 
-        for neighbor in graph[cur]:
-            if neighbor not in v:
-                v.add(neighbor)
-                print(neighbor, end=" ")
-                queue.append(neighbor)
+    while q:
+        c = q.popleft()
+        print(c, end=" ")
+
+        if c == en:
+            return
+
+        for child in graph[c]:
+            if child not in v:
+                v.add(child)
+                q.append(child)
+
 
     return
 
