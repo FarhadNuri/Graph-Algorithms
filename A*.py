@@ -1,51 +1,47 @@
 import heapq
 
-def fp(came_from, node):
-    path = [node]
-    while came_from[node] is not None:
-        node = came_from[node]
-        path.insert(0, node)
+def path_cost(path, graph):
+    cost = 0
+    for i in range(len(path) - 1):
+        cost += graph[path[i]][path[i + 1]]
+    return cost
+
+def fp(came_from,goal):
+    path =[goal]
+    while came_from[goal] is not None:
+        goal =came_from[goal]
+        path.insert(0,goal)
     return path
 
+def aStar(graph,h,st,en):
+    open=[]
+    heapq.heappush(open, (h[st], st))
 
-def a_star(graph, h, st, end):
-    open = []
-    g_cost = {st: 0}
-
-    st_cost = (h.get(st, float('inf')), st)  # f = g + h = 0 + h
-    heapq.heappush(open, st_cost)
-
-    came_from = {st: None}
+    v={st:0}
+    came_from={st:None}
 
     while open:
+
         node = heapq.heappop(open)
         cur = node[1]
 
-        if cur == end:
-            path = fp(came_from, cur)
-            total = 0
-            for i in range(len(path) - 1):
-                total += graph[path[i]][path[i + 1]]
+        if cur == en:
+            return fp(came_from,cur)
 
-            return path, total
+        for nei in graph[cur]:
+            gcost = v[cur] + graph[cur][nei]
 
-        for neighbor, weight in graph[cur].items():
-            new_g = g_cost[cur] + weight  # g(n) update
+            if nei not in v or gcost < v[nei]:
+                v[nei] = gcost
 
-            if neighbor not in g_cost or new_g < g_cost[neighbor]:
-                g_cost[neighbor] = new_g
+                hcost = h.get(nei,float('inf'))
 
-                # A* priority f = g + h
-                f = new_g + h.get(neighbor, float('inf'))
+                f = gcost + hcost
+                heapq.heappush(open,(f,nei))
 
-                cost_pair = (f, neighbor)
-                heapq.heappush(open, cost_pair)
+                came_from[nei]=cur
 
-                came_from[neighbor] = cur
-
-    return None,0
-
-
+    return None
 
 # --- Heuristic Data (Straight-Line Distance to Bucharest) ---
 h = {
@@ -80,14 +76,12 @@ graph = {
     'Neamt': {'Iasi': 87}
 }
 
-
 start = 'Arad'
 goal = 'Bucharest'
 
-final_path, astar_cost = a_star(graph, h, start, goal)
+final_path = aStar(graph, h, start, goal)
 
-if final_path is not None:
-    print(f"A* Path: {' -> '.join(final_path)}")
-    print("A* Total Cost:", astar_cost)
-else:
-    print("No path found")
+if final_path:
+    total_cost = path_cost(final_path, graph)
+    print("Path:", " -> ".join(final_path))
+    print("Cost:", total_cost)
