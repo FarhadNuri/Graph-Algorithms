@@ -1,18 +1,22 @@
-def dfs(graph, st):
+def dfs(graph, st, en):
+    s = [st] 
     v = {st}
-    stack = [st]
-    print(st, end=" ")
 
-    while stack:
-        cur = stack.pop()
+    while s:
+        c = s.pop()
+        print(c, end=" ")
 
-        for neighbor in graph[cur]:
-            if neighbor not in v:
-                v.add(neighbor)
-                print(neighbor, end=" ")
-                stack.append(neighbor)
+        if c == en:
+            return
+
+        for child in graph[c]:
+            if child not in v:
+                v.add(child)
+                s.append(child)
+
 
     return
+
 
 graph = {
     'a': ['b', 'd'],
@@ -22,4 +26,4 @@ graph = {
     'e': ['c', 'd', 'b']
 }
 
-dfs(graph, 'a')
+dfs(graph, 'a','e')
