@@ -28,4 +28,4 @@ graph = {
     'e': ['c', 'd', 'b']
 }
 
-bfs(graph, 'a')
+bfs(graph, 'a', 'e')
