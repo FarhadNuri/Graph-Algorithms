@@ -1,39 +1,47 @@
 import heapq
 
-def fp(came_from, node):
-    path = [node]
-    while came_from[node] is not None:
-        node = came_from[node]
-        path.insert(0, node)
+def path_cost(path, graph):
+    cost = 0
+    for i in range(len(path) - 1):
+        cost += graph[path[i]][path[i + 1]]
+    return cost
+
+
+def fp(came_from,goal):
+    path =[goal]
+    while came_from[goal] is not None:
+        goal =came_from[goal]
+        path.insert(0,goal)
     return path
 
+def gBFS(graph,h,st,en):
 
-def gBFS(graph, h, st, end):
-    open = []
-    st_cost= (h.get(st, float('inf')), st)
-    heapq.heappush(open, st_cost)
+    open=[]
+    st_cost = h.get(st,float('inf')),st
+    heapq.heappush(open,st_cost)
 
-    visited = {st}
-    came_from = {st: None}
+    v={st}
+    came_from={st:None}
 
     while open:
+
         node = heapq.heappop(open)
         cur = node[1]
 
-        if cur == end:
-            return fp(came_from, cur)
+        if cur == en:
+            return fp(came_from,cur)
 
-        for neighbor in graph[cur]:
-            if neighbor not in visited:
-                visited.add(neighbor)
+        for nei in graph[cur]:
+            if nei not in v:
+                v.add(nei)
 
-                cost = (h.get(neighbor, float('inf')), neighbor)
-                heapq.heappush(open, cost)
+                cost = h.get(nei,float('inf')),nei
+                heapq.heappush(open,cost)
 
-                came_from[neighbor] = cur
+                came_from[nei]=cur
+
 
     return None
-
 
 
 # --- Heuristic Data (Straight-Line Distance to Bucharest) ---
@@ -69,13 +77,12 @@ graph = {
     'Neamt': {'Iasi': 87}
 }
 
-start = 'Oradea'
-goal = 'Craiova'
+start = 'Arad'
+goal = 'Bucharest'
 
 final_path = gBFS(graph, h, start, goal)
 
 if final_path:
-    if final_path != "Goal not reachable":
-        print(f"Path: {' -> '.join(final_path)}")
-    else:
-        print(final_path)
+    total_cost = path_cost(final_path, graph)
+    print("Path:", " -> ".join(final_path))
+    print("Cost:", total_cost)
