@@ -17,7 +17,7 @@ def fp(came_from,goal):
 def gBFS(graph,h,st,en):
 
     open=[]
-    st_cost = h.get(st,float('inf')),st
+    st_cost = h[st], st
     heapq.heappush(open,st_cost)
 
     v={st}
@@ -35,7 +35,7 @@ def gBFS(graph,h,st,en):
             if nei not in v:
                 v.add(nei)
 
-                cost = h.get(nei,float('inf')),nei
+                cost = h[nei],nei
                 heapq.heappush(open,cost)
 
                 came_from[nei]=cur
