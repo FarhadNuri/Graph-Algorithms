@@ -15,9 +15,10 @@ def fp(came_from,goal):
 
 def aStar(graph,h,st,en):
     open=[]
-    heapq.heappush(open, (h[st], st))
+    st_cost=h[st], st
+    heapq.heappush(open, st_cost)
 
-    v={st:0}
+    g_approx={st:0}
     came_from={st:None}
 
     while open:
@@ -29,14 +30,12 @@ def aStar(graph,h,st,en):
             return fp(came_from,cur)
 
         for nei in graph[cur]:
-            gcost = v[cur] + graph[cur][nei]
+            gcost = g_approx[cur] + graph[cur][nei]
 
-            if nei not in v or gcost < v[nei]:
-                v[nei] = gcost
+            if nei not in g_approx or gcost < g_approx[nei]:
+                g_approx[nei] = gcost
 
-                hcost = h.get(nei,float('inf'))
-
-                f = gcost + hcost
+                f = gcost + h[nei]
                 heapq.heappush(open,(f,nei))
 
                 came_from[nei]=cur
